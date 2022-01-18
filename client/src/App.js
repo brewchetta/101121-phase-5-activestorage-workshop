@@ -1,57 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import ChatRoom from './ChatRoom'
+import ImageUpload from "./ImageUpload"
 
 function App() {
 
-  const [user, setUser] = useState(null)
-  const [chatOpen, setChatOpen] = useState(null)
+  const [imagePath, setImagePath] = useState('')
 
   useEffect(() => {
-    fetch('/me')
+    fetch('/images/1')
     .then(res => res.json())
     .then(data => {
-      if (data.id) {
-        setUser(data)
-      }
+      console.log(data);
+      setImagePath(data.image_url.url)
     })
   }, [])
-
-  function handleLogin() {
-    fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accepts': 'application/json'
-      },
-      body: JSON.stringify({user_id: 1})
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.id) {
-        setUser(data)
-      }
-    })
-  }
-
-  function handleLogout() {
-    fetch('/login', {
-      method: 'DELETE'
-    })
-    .then(() => setUser(null))
-  }
 
   return (
     <div className="App">
 
-      <p>{user?.name || "Logged Out"}</p>
+      <ImageUpload />
 
-      <button type="button" onClick={handleLogin}>Login</button>
-
-      <button type="button" onClick={handleLogout}>Logout</button>
-
-      <button type="button" onClick={() => setChatOpen(prev => !prev)}>{chatOpen ? "Close Chat" : "Open Chat"}</button>
-
-      {chatOpen ? <ChatRoom user={user} /> : null}
+      <img src={imagePath} alt='nothing' />
 
     </div>
   );
